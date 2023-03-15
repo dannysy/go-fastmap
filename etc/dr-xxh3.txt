@@ -1,0 +1,145 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/dannysy/go-cache/internal/fastmap
+BenchmarkHaxMapReadsOnly-10            	   84800	     13292 ns/op
+BenchmarkHaxMapReadsOnly-10            	   90730	     13273 ns/op
+BenchmarkHaxMapReadsOnly-10            	   89829	     13414 ns/op
+BenchmarkHaxMapReadsOnly-10            	   89934	     13435 ns/op
+BenchmarkHaxMapReadsOnly-10            	   90399	     13358 ns/op
+BenchmarkHaxMapReadsOnly-10            	   88507	     13392 ns/op
+BenchmarkHaxMapReadsOnly-10            	   89336	     13243 ns/op
+BenchmarkHaxMapReadsOnly-10            	   90782	     13470 ns/op
+BenchmarkHaxMapReadsOnly-10            	   90543	     13261 ns/op
+BenchmarkHaxMapReadsOnly-10            	   89872	     13377 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   71047	     16261 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   72850	     16430 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   72405	     16609 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   72733	     16314 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   72760	     16600 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   72368	     16306 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   71646	     16233 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   74203	     16279 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   72165	     16480 ns/op
+BenchmarkHaxMapReadsWithWrites-10      	   73364	     16241 ns/op
+BenchmarkMutexMapReadsOnly-10          	    1857	    650502 ns/op
+BenchmarkMutexMapReadsOnly-10          	    1882	    649579 ns/op
+BenchmarkMutexMapReadsOnly-10          	    1884	    644171 ns/op
+BenchmarkMutexMapReadsOnly-10          	    1880	    648326 ns/op
+BenchmarkMutexMapReadsOnly-10          	    1873	    647003 ns/op
+BenchmarkMutexMapReadsOnly-10          	    1881	    647125 ns/op
+BenchmarkMutexMapReadsOnly-10          	    1893	    629759 ns/op
+BenchmarkMutexMapReadsOnly-10          	    2854	    636988 ns/op
+BenchmarkMutexMapReadsOnly-10          	    1862	    650592 ns/op
+BenchmarkMutexMapReadsOnly-10          	    1869	    630902 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3762	    324952 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3624	    323794 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3568	    318545 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3681	    322335 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3687	    325410 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3681	    318773 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3697	    316877 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3649	    325580 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3660	    319646 ns/op
+BenchmarkMutexMapReadsWithWrites-10    	    3704	    337197 ns/op
+BenchmarkBuiltinMapSet-10              	33403814	        45.23 ns/op	       8 B/op	       0 allocs/op
+BenchmarkBuiltinMapSet-10              	35266586	        34.93 ns/op	       8 B/op	       0 allocs/op
+BenchmarkBuiltinMapSet-10              	35078744	        35.29 ns/op	       8 B/op	       0 allocs/op
+BenchmarkBuiltinMapSet-10              	35687863	        33.85 ns/op	       8 B/op	       0 allocs/op
+BenchmarkBuiltinMapSet-10              	34614884	        34.50 ns/op	       8 B/op	       0 allocs/op
+BenchmarkBuiltinMapSet-10              	35644268	        33.85 ns/op	       8 B/op	       0 allocs/op
+BenchmarkBuiltinMapSet-10              	35378488	        33.79 ns/op	       8 B/op	       0 allocs/op
+BenchmarkBuiltinMapSet-10              	36528567	        34.80 ns/op	       8 B/op	       0 allocs/op
+BenchmarkBuiltinMapSet-10              	35767688	        34.96 ns/op	       8 B/op	       0 allocs/op
+BenchmarkBuiltinMapSet-10              	35277472	        34.82 ns/op	       8 B/op	       0 allocs/op
+BenchmarkHaxMapSet-10                  	19648590	        61.94 ns/op	      24 B/op	       2 allocs/op
+BenchmarkHaxMapSet-10                  	19658152	        63.31 ns/op	      24 B/op	       2 allocs/op
+BenchmarkHaxMapSet-10                  	19726634	        67.01 ns/op	      24 B/op	       2 allocs/op
+BenchmarkHaxMapSet-10                  	19198412	        64.80 ns/op	      24 B/op	       2 allocs/op
+BenchmarkHaxMapSet-10                  	19279894	        63.48 ns/op	      24 B/op	       2 allocs/op
+BenchmarkHaxMapSet-10                  	19664662	        64.12 ns/op	      24 B/op	       2 allocs/op
+BenchmarkHaxMapSet-10                  	19458091	        63.94 ns/op	      24 B/op	       2 allocs/op
+BenchmarkHaxMapSet-10                  	19716897	        63.37 ns/op	      24 B/op	       2 allocs/op
+BenchmarkHaxMapSet-10                  	19530123	        63.66 ns/op	      24 B/op	       2 allocs/op
+BenchmarkHaxMapSet-10                  	19562652	        63.41 ns/op	      24 B/op	       2 allocs/op
+BenchmarkMutexMapSet-10                	29014446	        40.13 ns/op	       8 B/op	       0 allocs/op
+BenchmarkMutexMapSet-10                	30371416	        41.07 ns/op	       8 B/op	       0 allocs/op
+BenchmarkMutexMapSet-10                	30087756	        41.89 ns/op	       8 B/op	       0 allocs/op
+BenchmarkMutexMapSet-10                	29505415	        41.39 ns/op	       8 B/op	       0 allocs/op
+BenchmarkMutexMapSet-10                	29805396	        41.09 ns/op	       8 B/op	       0 allocs/op
+BenchmarkMutexMapSet-10                	29588899	        42.27 ns/op	       8 B/op	       0 allocs/op
+BenchmarkMutexMapSet-10                	29911292	        40.60 ns/op	       8 B/op	       0 allocs/op
+BenchmarkMutexMapSet-10                	29507863	        40.75 ns/op	       8 B/op	       0 allocs/op
+BenchmarkMutexMapSet-10                	30043782	        40.86 ns/op	       8 B/op	       0 allocs/op
+BenchmarkMutexMapSet-10                	29220571	        41.98 ns/op	       8 B/op	       0 allocs/op
+BenchmarkFastStringMapSet-10           	23341250	        50.32 ns/op	      72 B/op	       2 allocs/op
+BenchmarkFastStringMapSet-10           	25311448	        50.11 ns/op	      72 B/op	       2 allocs/op
+BenchmarkFastStringMapSet-10           	25254540	        49.08 ns/op	      72 B/op	       2 allocs/op
+BenchmarkFastStringMapSet-10           	25488732	        49.78 ns/op	      72 B/op	       2 allocs/op
+BenchmarkFastStringMapSet-10           	25446303	        49.34 ns/op	      72 B/op	       2 allocs/op
+BenchmarkFastStringMapSet-10           	25202142	        49.33 ns/op	      72 B/op	       2 allocs/op
+BenchmarkFastStringMapSet-10           	25078718	        50.50 ns/op	      72 B/op	       2 allocs/op
+BenchmarkFastStringMapSet-10           	24002700	        49.94 ns/op	      72 B/op	       2 allocs/op
+BenchmarkFastStringMapSet-10           	25947769	        51.52 ns/op	      72 B/op	       2 allocs/op
+BenchmarkFastStringMapSet-10           	24523744	        49.28 ns/op	      72 B/op	       2 allocs/op
+BenchmarkBuiltinMapGet-10              	88363082	        39.81 ns/op	       0 B/op	       0 allocs/op
+BenchmarkBuiltinMapGet-10              	83375060	        23.89 ns/op	       0 B/op	       0 allocs/op
+BenchmarkBuiltinMapGet-10              	86007626	        18.22 ns/op	       0 B/op	       0 allocs/op
+BenchmarkBuiltinMapGet-10              	86326537	        22.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkBuiltinMapGet-10              	86961776	        19.78 ns/op	       0 B/op	       0 allocs/op
+BenchmarkBuiltinMapGet-10              	91595774	        25.09 ns/op	       0 B/op	       0 allocs/op
+BenchmarkBuiltinMapGet-10              	83175697	        15.28 ns/op	       0 B/op	       0 allocs/op
+BenchmarkBuiltinMapGet-10              	85411276	        17.89 ns/op	       0 B/op	       0 allocs/op
+BenchmarkBuiltinMapGet-10              	89348589	        24.12 ns/op	       0 B/op	       0 allocs/op
+BenchmarkBuiltinMapGet-10              	86509611	        15.60 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	45434108	        27.22 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	45316150	        28.43 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	44876028	        26.44 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	45821930	        26.53 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	45518484	        26.14 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	45708481	        26.36 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	45159044	        26.22 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	45452607	        26.18 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	45150406	        26.15 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHaxMapGet-10                  	45724809	        26.22 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	63065920	        22.50 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	62556476	        21.14 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	61833355	        19.93 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	65537806	        19.96 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	60267938	        19.78 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	64770331	        21.18 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	60387994	        18.93 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	62572240	        19.21 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	66049441	        20.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexMapGet-10                	63242772	        19.00 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFastStringMapGet-10           	30936106	        39.34 ns/op	      64 B/op	       1 allocs/op
+BenchmarkFastStringMapGet-10           	31758529	        41.35 ns/op	      64 B/op	       1 allocs/op
+BenchmarkFastStringMapGet-10           	33053410	        41.25 ns/op	      64 B/op	       1 allocs/op
+BenchmarkFastStringMapGet-10           	31421736	        40.97 ns/op	      64 B/op	       1 allocs/op
+BenchmarkFastStringMapGet-10           	31372582	        40.61 ns/op	      64 B/op	       1 allocs/op
+BenchmarkFastStringMapGet-10           	29815670	        40.78 ns/op	      64 B/op	       1 allocs/op
+BenchmarkFastStringMapGet-10           	30429756	        42.87 ns/op	      64 B/op	       1 allocs/op
+BenchmarkFastStringMapGet-10           	29131839	        41.06 ns/op	      64 B/op	       1 allocs/op
+BenchmarkFastStringMapGet-10           	29995874	        44.05 ns/op	      64 B/op	       1 allocs/op
+BenchmarkFastStringMapGet-10           	30583766	        41.70 ns/op	      64 B/op	       1 allocs/op
+BenchmarkSimpleHash-10                 	30425962	        39.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSimpleHash-10                 	30342267	        39.22 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSimpleHash-10                 	30440917	        39.29 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSimpleHash-10                 	30583702	        39.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSimpleHash-10                 	30287541	        39.24 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSimpleHash-10                 	30366453	        39.31 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSimpleHash-10                 	30412308	        39.25 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSimpleHash-10                 	30500331	        39.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSimpleHash-10                 	30535873	        39.28 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSimpleHash-10                 	30557968	        39.37 ns/op	       0 B/op	       0 allocs/op
+BenchmarkXxHash-10                     	37292125	        31.60 ns/op	      64 B/op	       1 allocs/op
+BenchmarkXxHash-10                     	41967578	        30.98 ns/op	      64 B/op	       1 allocs/op
+BenchmarkXxHash-10                     	41914381	        30.38 ns/op	      64 B/op	       1 allocs/op
+BenchmarkXxHash-10                     	40276620	        31.63 ns/op	      64 B/op	       1 allocs/op
+BenchmarkXxHash-10                     	40698026	        31.03 ns/op	      64 B/op	       1 allocs/op
+BenchmarkXxHash-10                     	41127286	        30.73 ns/op	      64 B/op	       1 allocs/op
+BenchmarkXxHash-10                     	41489590	        30.45 ns/op	      64 B/op	       1 allocs/op
+BenchmarkXxHash-10                     	41338623	        30.37 ns/op	      64 B/op	       1 allocs/op
+BenchmarkXxHash-10                     	41895784	        30.61 ns/op	      64 B/op	       1 allocs/op
+BenchmarkXxHash-10                     	41400009	        30.71 ns/op	      64 B/op	       1 allocs/op
+PASS
+ok  	github.com/dannysy/go-cache/internal/fastmap	449.820s
