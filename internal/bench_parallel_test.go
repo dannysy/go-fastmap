@@ -89,6 +89,7 @@ func BenchmarkHaxMapReadsWithWrites(b *testing.B) {
 	})
 	b.ReportAllocs()
 }
+
 func BenchmarkFastStringMapReadsOnly(b *testing.B) {
 	m := setupFastStringMap()
 	in := getInStrings(epochs)
