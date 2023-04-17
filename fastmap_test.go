@@ -2,7 +2,12 @@ package fastmap
 
 import (
 	"strconv"
+	"sync"
 	"testing"
+
+	"github.com/alphadose/haxmap"
+
+	"github.com/dannysy/go-fastmap/internal/mutexmap"
 )
 
 type animal struct {
@@ -54,6 +59,7 @@ func TestSet(t *testing.T) {
 	m.Set("4", "cat")
 	m.Set("3", "cat")
 	m.Set("2", "tiger")
+	m.Set("1", "tiger")
 	m.Set("1", "tiger")
 
 	if m.Len() != 4 {
@@ -135,5 +141,123 @@ func TestDelete(t *testing.T) {
 	_, ok := m.Get("1") // Get a missing element.
 	if ok {
 		t.Error("ok should be false when item is missing from map.")
+	}
+}
+
+func TestConcurrent(t *testing.T) {
+	wg := sync.WaitGroup{}
+	fm := New()
+	m := sync.Map{}
+	for i := 0; i < 2; i++ {
+		wg.Add(1)
+		go func() {
+			for j := 0; j < 10; j++ {
+				fm.Set("a", j)
+				m.Store("a", j)
+				fm.Set("a", j+1)
+				m.Store("a", j+1)
+				fm.Delete("a")
+				m.Delete("a")
+				fm.Set("a", j+2)
+				m.Store("a", j+2)
+			}
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	m.Range(func(key, value any) bool {
+		v, ok := fm.Get(key.(string))
+		if !ok {
+			t.Fatalf("expected key %v to be in map", key)
+		}
+		if v.(int) != value.(int) {
+			t.Fatalf("expected value of key %v to be %v but was %v", key, value, v)
+		}
+		return true
+	})
+}
+
+func TestConcurrentTimes(t *testing.T) {
+	for i := 0; i < 100; i++ {
+		TestConcurrent(t)
+	}
+}
+
+func TestConcurrentHM(t *testing.T) {
+	wg := sync.WaitGroup{}
+	fm := haxmap.New[string, interface{}]()
+	m := sync.Map{}
+	for i := 0; i < 2; i++ {
+		wg.Add(1)
+		go func() {
+			for j := 0; j < 10; j++ {
+				fm.Set("a", j)
+				m.Store("a", j)
+				fm.Set("a", j+1)
+				m.Store("a", j+1)
+				fm.Del("a")
+				m.Delete("a")
+				fm.Set("a", j+2)
+				m.Store("a", j+2)
+			}
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	m.Range(func(key, value any) bool {
+		v, ok := fm.Get(key.(string))
+		if !ok {
+			t.Fatalf("expected key %v to be in map", key)
+		}
+		if v.(int) != value.(int) {
+			t.Fatalf("expected value of key %v to be %v but was %v", key, value, v)
+		}
+		return true
+	})
+}
+
+// TestConcurrentHMTimes shows that HaxMap runs incorrect in concurrent use
+func TestConcurrentHMTimes(t *testing.T) {
+	for i := 0; i < 25; i++ {
+		TestConcurrentHM(t)
+	}
+}
+
+func TestConcurrentMM(t *testing.T) {
+	wg := sync.WaitGroup{}
+	fm := mutexmap.New()
+	m := sync.Map{}
+	for i := 0; i < 2; i++ {
+		wg.Add(1)
+		go func() {
+			for j := 0; j < 10; j++ {
+				fm.Set("a", j)
+				m.Store("a", j)
+				fm.Set("a", j+1)
+				m.Store("a", j+1)
+				fm.Delete("a")
+				m.Delete("a")
+				fm.Set("a", j+2)
+				m.Store("a", j+2)
+			}
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	m.Range(func(key, value any) bool {
+		v, ok := fm.Get(key.(string))
+		if !ok {
+			t.Fatalf("expected key %v to be in map", key)
+		}
+		if v.(int) != value.(int) {
+			t.Fatalf("expected value of key %v to be %v but was %v", key, value, v)
+		}
+		return true
+	})
+}
+
+func TestConcurrentMMTimes(t *testing.T) {
+	for i := 0; i < 100; i++ {
+		TestConcurrentMM(t)
 	}
 }

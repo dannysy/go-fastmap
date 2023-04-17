@@ -41,6 +41,26 @@ BenchmarkMutexMapReadsWithWrites-10    	    3690	    315809 ns/op
 BenchmarkMutexMapReadsWithWrites-10    	    3607	    319766 ns/op
 BenchmarkMutexMapReadsWithWrites-10    	    3169	    323533 ns/op
 BenchmarkMutexMapReadsWithWrites-10    	    3704	    318775 ns/op
+BenchmarkFastStringMapReadsOnly-10         19502             55400 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsOnly-10         20473             61809 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsOnly-10         18472             64925 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsOnly-10         18068             61964 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsOnly-10         19330             67506 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsOnly-10         17486             61462 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsOnly-10         19443             61776 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsOnly-10         20372             59818 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsOnly-10         18456             59029 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsOnly-10         19804             64695 ns/op               0 B/op          0 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           17179             67436 ns/op            2087 B/op        260 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           17774             65565 ns/op            2207 B/op        275 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           18123             64287 ns/op            1736 B/op        216 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           18974             60985 ns/op            1873 B/op        234 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           20403             66209 ns/op            2038 B/op        254 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           19227             68113 ns/op            2066 B/op        258 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           17456             65206 ns/op            1833 B/op        229 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           17682             63281 ns/op            1765 B/op        220 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           18572             66359 ns/op            2177 B/op        272 allocs/op
+BenchmarkFastStringMapReadsWithWrites-10           16732             65502 ns/op            2234 B/op        279 allocs/op
 BenchmarkBuiltinMapSet-10              	33022524	        35.76 ns/op	       8 B/op	       0 allocs/op
 BenchmarkBuiltinMapSet-10              	34733527	        35.02 ns/op	       8 B/op	       0 allocs/op
 BenchmarkBuiltinMapSet-10              	34627994	        36.02 ns/op	       8 B/op	       0 allocs/op

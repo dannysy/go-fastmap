@@ -1,4 +1,4 @@
-package fastmap
+package internal
 
 func Hash(in string) (out uint64) {
 	for i := range in {

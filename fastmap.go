@@ -1,6 +1,7 @@
 package fastmap
 
 import (
+	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -18,7 +19,7 @@ type SetOption func(m *FastMap)
 
 func WithSize(size uint64) func(m *FastMap) {
 	return func(m *FastMap) {
-		m.bucketsCount.Store(size)
+		m.bucketsCount = size
 		m.buckets = make([]bucket, size)
 	}
 }
@@ -30,20 +31,22 @@ func WithLoadFactor(lf float32) func(m *FastMap) {
 }
 
 type FastMap struct {
-	loadFactor        float32
-	size              atomic.Uint64
-	seed              uint64
-	bucketsCount      atomic.Uint64
-	buckets           []bucket
-	bucketsLock       sync.Mutex
-	isEvacuating      atomic.Bool
-	evacuatedSize     atomic.Uint64
-	evacuationBuckets []bucket
+	seed        uint64
+	loadFactor  float32
+	loadCounter atomic.Uint64
+	//size                  atomic.Uint64
+	bucketsCount uint64
+	buckets      []bucket
+	bucketsLock  sync.RWMutex
+	isEvacuating atomic.Bool
+	//evacuatedSize         atomic.Uint64
+	evacuationBucketsCount uint64
+	evacuationBuckets      []bucket
+	evacuationBucketsLock  sync.RWMutex
 }
 
 type bucket struct {
-	itemsLock sync.RWMutex
-	items     []entry
+	items skiplist
 }
 
 type entry struct {
@@ -53,11 +56,12 @@ type entry struct {
 
 func New(opts ...SetOption) *FastMap {
 	fm := FastMap{
-		loadFactor:  0.75,
-		seed:        uint64(time.Now().UnixNano()),
-		bucketsLock: sync.Mutex{},
+		loadFactor:            0.75,
+		seed:                  uint64(time.Now().UnixNano()),
+		bucketsLock:           sync.RWMutex{},
+		evacuationBucketsLock: sync.RWMutex{},
 	}
-	fm.bucketsCount.Store(defaultBucketCount)
+	fm.bucketsCount = defaultBucketCount
 	fm.buckets = make([]bucket, defaultBucketCount)
 	for _, setOption := range opts {
 		setOption(&fm)
@@ -65,8 +69,21 @@ func New(opts ...SetOption) *FastMap {
 	return &fm
 }
 
-func (m *FastMap) Len() uint64 {
-	return m.size.Load() + m.evacuatedSize.Load()
+func (m *FastMap) Len() (out uint64) {
+	m.bucketsLock.RLock()
+	for i := range m.buckets {
+		out += m.buckets[i].len()
+	}
+	m.bucketsLock.RUnlock()
+	if m.isEvacuating.Load() {
+		m.evacuationBucketsLock.RLock()
+		for i := range m.evacuationBuckets {
+			out += m.evacuationBuckets[i].len()
+		}
+		m.evacuationBucketsLock.RUnlock()
+	}
+	return out
+	//return m.size.Load() + m.evacuatedSize.Load()
 }
 
 func (m *FastMap) Set(key string, value interface{}) {
@@ -78,13 +95,13 @@ func (m *FastMap) Set(key string, value interface{}) {
 	}
 	m.set(key, value, keyHash)
 	if m.shouldEvacuate() {
-		m.bucketsLock.Lock()
-		if m.isEvacuating.Load() {
-			return
+		ov := m.isEvacuating.Swap(true)
+		if !ov {
+			m.evacuationBucketsLock.Lock()
+			m.evacuationBucketsCount = m.bucketsCount * growMul
+			m.evacuationBuckets = make([]bucket, m.evacuationBucketsCount)
+			m.evacuationBucketsLock.Unlock()
 		}
-		m.evacuationBuckets = make([]bucket, m.bucketsCount.Load()*growMul)
-		m.isEvacuating.Store(true)
-		m.bucketsLock.Unlock()
 	}
 }
 
@@ -108,43 +125,65 @@ func (m *FastMap) Delete(key string) {
 }
 
 func (m *FastMap) setEv(key string, value interface{}, keyHash uint64) {
-	bucketNum := keyHash % (m.bucketsCount.Load() * growMul)
-	isNew := m.evacuationBuckets[bucketNum].set(key, value)
-	if isNew {
-		m.evacuatedSize.Add(1)
-	}
+	bucketNum := keyHash % m.evacuationBucketsCount
+	m.evacuationBucketsLock.RLock()
+	b := &m.evacuationBuckets[bucketNum]
+	m.evacuationBucketsLock.RUnlock()
+	_ = b.set(key, value)
+	//if isNew {
+	//	m.evacuatedSize.Add(1)
+	//}
 }
 
 func (m *FastMap) set(key string, value interface{}, keyHash uint64) {
-	bucketNum := keyHash % m.bucketsCount.Load()
-	isNew := m.buckets[bucketNum].set(key, value)
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Recovered bucketNum %v and buckets count %v and len %v\n", keyHash%m.bucketsCount, m.bucketsCount, len(m.buckets))
+			fmt.Printf("IS EVAC %v\n", m.isEvacuating.Load())
+		}
+	}()
+	m.bucketsLock.RLock()
+	bucketNum := keyHash % m.bucketsCount
+	b := &m.buckets[bucketNum]
+	m.bucketsLock.RUnlock()
+	isNew := b.set(key, value)
 	if isNew {
-		m.size.Add(1)
+		//m.size.Add(1)
+		m.loadCounter.Add(1)
 	}
 }
 
 func (m *FastMap) delEv(key string, keyHash uint64) {
-	bucketNum := keyHash % m.bucketsCount.Load() * growMul
-	found := m.evacuationBuckets[bucketNum].del(key)
+	bucketNum := keyHash % m.evacuationBucketsCount
+	m.evacuationBucketsLock.RLock()
+	b := &m.evacuationBuckets[bucketNum]
+	m.evacuationBucketsLock.RUnlock()
+	found := b.del(key)
 	if !found {
 		m.del(key, keyHash)
 		return
 	}
-	m.evacuatedSize.Add(decrement)
+	//m.evacuatedSize.Add(decrement)
 }
 
 func (m *FastMap) del(key string, keyHash uint64) {
-	bucketNum := keyHash % m.bucketsCount.Load()
-	found := m.buckets[bucketNum].del(key)
+	m.bucketsLock.RLock()
+	bucketNum := keyHash % m.bucketsCount
+	b := &m.buckets[bucketNum]
+	m.bucketsLock.RUnlock()
+	found := b.del(key)
 	if !found {
 		return
 	}
-	m.size.Add(decrement)
+	//m.size.Add(decrement)
 }
 
 func (m *FastMap) getEv(key string, keyHash uint64) (value interface{}, found bool) {
-	bucketNum := keyHash % m.bucketsCount.Load() * growMul
-	value, found = m.evacuationBuckets[bucketNum].get(key)
+	bucketNum := keyHash % m.evacuationBucketsCount
+	m.evacuationBucketsLock.RLock()
+	b := &m.evacuationBuckets[bucketNum]
+	m.evacuationBucketsLock.RUnlock()
+	value, found = b.get(key)
 	if !found {
 		value, found = m.get(key, keyHash)
 	}
@@ -152,12 +191,18 @@ func (m *FastMap) getEv(key string, keyHash uint64) (value interface{}, found bo
 }
 
 func (m *FastMap) get(key string, keyHash uint64) (interface{}, bool) {
-	bucketNum := keyHash % m.bucketsCount.Load()
-	return m.buckets[bucketNum].get(key)
+	m.bucketsLock.RLock()
+	bucketNum := keyHash % m.bucketsCount
+	b := &m.buckets[bucketNum]
+	m.bucketsLock.RUnlock()
+	return b.get(key)
 }
 
 func (m *FastMap) shouldEvacuate() bool {
-	if float32(m.size.Load())/float32(m.bucketsCount.Load()) >= m.loadFactor {
+	//if float32(m.size.Load())/float32(m.bucketsCount.Load()) >= m.loadFactor {
+	//	return true
+	//}
+	if float32(m.loadCounter.Load())/float32(m.bucketsCount) >= m.loadFactor {
 		return true
 	}
 	return false
@@ -166,21 +211,23 @@ func (m *FastMap) shouldEvacuate() bool {
 func (m *FastMap) evacuatePart() {
 	var found bool
 	var e entry
+	m.bucketsLock.RLock()
 	for i := range m.buckets {
-		for j := range m.buckets[i].items {
-			e = m.buckets[i].items[j]
-			found = true
+		e, found = m.buckets[i].items.Any()
+		if found {
+			break
 		}
 	}
+	m.bucketsLock.RUnlock()
 	if !found {
 		m.bucketsLock.Lock()
 		m.buckets = m.evacuationBuckets
-		m.evacuationBuckets = nil
+		if ov := m.isEvacuating.Swap(false); ov {
+			m.bucketsCount = m.bucketsCount * growMul
+		}
 		m.bucketsLock.Unlock()
-		m.bucketsCount.Store(m.bucketsCount.Load() * growMul)
-		m.size.Swap(m.evacuatedSize.Load())
-		m.evacuatedSize.Store(0)
-		m.isEvacuating.Store(false)
+		//m.size.Swap(m.evacuatedSize.Load())
+		//m.evacuatedSize.Store(0)
 		return
 	}
 	keyHash := xxh3.HashStringSeed(e.key, m.seed)
@@ -189,57 +236,24 @@ func (m *FastMap) evacuatePart() {
 }
 
 func (b *bucket) set(key string, value interface{}) (isNew bool) {
-	b.itemsLock.RLock()
-	for i := range b.items {
-		e := &b.items[i]
-		if e.key == key {
-			e.value = value
-			b.itemsLock.RUnlock()
-			return false
-		}
+	in := entry{key: key, value: value}
+	ok := b.items.CompareAndSwap(&in)
+	if ok {
+		return false
 	}
-	b.itemsLock.RUnlock()
-	b.itemsLock.Lock()
-	b.items = append(b.items, entry{
-		key:   key,
-		value: value,
-	})
-	b.itemsLock.Unlock()
+	b.items.Add(&in)
 	return true
 }
 
 func (b *bucket) get(key string) (interface{}, bool) {
-	b.itemsLock.RLock()
-	for i := range b.items {
-		e := &b.items[i]
-		if e.key == key {
-			b.itemsLock.RUnlock()
-			return e.value, true
-		}
-	}
-	b.itemsLock.RUnlock()
-	return nil, false
+	out, ok := b.items.Get(key)
+	return out.value, ok
 }
 
 func (b *bucket) del(key string) bool {
-	var i int
-	var found bool
-	b.itemsLock.RLock()
-	for i = range b.items {
-		e := &b.items[i]
-		if e.key == key {
-			found = true
-			break
-		}
-	}
-	b.itemsLock.RUnlock()
-	if !found {
-		return false
-	}
-	b.itemsLock.Lock()
-	b.items[i] = b.items[len(b.items)-1]
-	b.items[len(b.items)-1] = entry{}
-	b.items = b.items[:len(b.items)-1]
-	b.itemsLock.Unlock()
-	return true
+	return b.items.Delete(key)
+}
+
+func (b *bucket) len() uint64 {
+	return b.items.Len()
 }

@@ -1,4 +1,4 @@
-package fastmap
+package internal
 
 import (
 	"sync"
@@ -60,9 +60,6 @@ func BenchmarkHaxMapReadsOnly(b *testing.B) {
 		for pb.Next() {
 			for i := 0; i < epochs; i++ {
 				_, _ = m.Get(in[i])
-				//if j.(int) != i {
-				//	b.Fail()
-				//}
 			}
 		}
 	})
@@ -86,9 +83,6 @@ func BenchmarkHaxMapReadsWithWrites(b *testing.B) {
 			for pb.Next() {
 				for i := 0; i < epochs; i++ {
 					_, _ = m.Get(in[i])
-					//if j.(int) != i {
-					//	b.Fail()
-					//}
 				}
 			}
 		}
@@ -103,9 +97,6 @@ func BenchmarkFastStringMapReadsOnly(b *testing.B) {
 		for pb.Next() {
 			for i := 0; i < epochs; i++ {
 				_, _ = m.Get(in[i])
-				//if j.(int) != i {
-				//	b.Fail()
-				//}
 			}
 		}
 	})
@@ -129,9 +120,6 @@ func BenchmarkFastStringMapReadsWithWrites(b *testing.B) {
 			for pb.Next() {
 				for i := 0; i < epochs; i++ {
 					_, _ = m.Get(in[i])
-					//if j.(int) != i {
-					//	b.Fail()
-					//}
 				}
 			}
 		}
@@ -147,9 +135,6 @@ func BenchmarkMutexMapReadsOnly(b *testing.B) {
 		for pb.Next() {
 			for i := 0; i < epochs; i++ {
 				_, _ = m.Get(in[i])
-				//if j.(int) != i {
-				//	b.Fail()
-				//}
 			}
 		}
 	})
@@ -173,9 +158,6 @@ func BenchmarkMutexMapReadsWithWrites(b *testing.B) {
 			for pb.Next() {
 				for i := 0; i < epochs; i++ {
 					_, _ = m.Get(in[i])
-					//if j.(int) != i {
-					//	b.Fail()
-					//}
 				}
 			}
 		}
@@ -191,9 +173,6 @@ func BenchmarkSyncMapReadsOnly(b *testing.B) {
 		for pb.Next() {
 			for i := 0; i < epochs; i++ {
 				_, _ = m.Load(in[i])
-				//if j.(int) != i {
-				//	b.Fail()
-				//}
 			}
 		}
 	})
@@ -217,9 +196,6 @@ func BenchmarkSyncMapReadsWithWrites(b *testing.B) {
 			for pb.Next() {
 				for i := 0; i < epochs; i++ {
 					_, _ = m.Load(in[i])
-					//if j.(int) != i {
-					//	b.Fail()
-					//}
 				}
 			}
 		}

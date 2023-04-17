@@ -1,4 +1,4 @@
-package fastmap
+package internal
 
 import (
 	"testing"
